@@ -18,21 +18,13 @@ git clone git@github.com:LeviClark/SeniorDesign.git
 ```
 
 ## Contributing
-
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
-
-
 Basic git commands: 
-git pull origin master - updates it off master, overriding your changes
-git pull --rebase origin master - updates while keeping your local changes
-git checkout -b <new-branch-name> - creates a new branch where you should do all of your current work from
-git checkout <existing-branch-name> - switches to an existing branch
-git status - shows your files youve changed
-git diff . - shows the actual changes in the code
-git add . -adds all changes to be committed
-git commit -m  "<short commit message explaining what youre committing> " - commits the changes
-git push origin <your-branch-name> -pushes up your code so you can create a Pull Request from github
+1. pull origin master - updates it off master, overriding your changes
+2. git pull --rebase origin master - updates while keeping your local changes
+3. git checkout -b new-branch-name - creates a new branch where you should do all of your current work from
+4. git checkout existing-branch-name - switches to an existing branch
+5. git status - shows your files youve changed
+6. git diff . - shows the actual changes in the code
+7. git add . -adds all changes to be committed
+8. git commit -m  "short commit message explaining what you're committing " - commits the changes
+9. git push origin your-branch-name -pushes up your code so you can create a Pull Request from github
