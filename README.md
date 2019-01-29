@@ -1,8 +1,8 @@
 ﻿# SeniorDesign
 # Please use Unity 2018.3.3, which should be the newest version, and do not update throughout development
 
-Here is the basic Git workflow for a refresher. 
-Basic git commands: 
+Here is the basic Git workflow for a refresher. /n
+Basic git commands: /n
 git pull origin master - updates it off master, overriding your changes
 git pull --rebase origin master - updates while keeping your local changes
 git checkout -b <new-branch-name> - creates a new branch where you should do all of your current work from
