@@ -25,3 +25,14 @@ git clone git@github.com:LeviClark/SeniorDesign.git
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
 
+
+Basic git commands: 
+git pull origin master - updates it off master, overriding your changes
+git pull --rebase origin master - updates while keeping your local changes
+git checkout -b <new-branch-name> - creates a new branch where you should do all of your current work from
+git checkout <existing-branch-name> - switches to an existing branch
+git status - shows your files youve changed
+git diff . - shows the actual changes in the code
+git add . -adds all changes to be committed
+git commit -m  "<short commit message explaining what youre committing> " - commits the changes
+git push origin <your-branch-name> -pushes up your code so you can create a Pull Request from github
