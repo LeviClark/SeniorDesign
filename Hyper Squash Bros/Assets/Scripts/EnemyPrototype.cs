@@ -7,8 +7,22 @@ public class EnemyPrototype : MonoBehaviour
 {
     [SerializeField]
     Text damageText; //reference to the text at the top-left of the screen.
-
-
+    int health;
+    private Rigidbody thisBody;
+    void Start()
+    {
+        thisBody = GetComponent<Rigidbody>();
+        health = 0;
+        damageText.text = "Damage : " + health + "%";
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Player")
+        {
+            health = health + 5;
+            updateDamage();
+        }
+    }
 
     public void updateDamage() {
         //Use this function to update the damage text on the top left of the screen.
@@ -16,5 +30,8 @@ public class EnemyPrototype : MonoBehaviour
         //update 'damageText' to display "Damage : 5%" on the screen.
 
         //Hint: Look into using tags and colliders
+
+        damageText.text = "Damage : " + health + "%";
+        
     }
 }
