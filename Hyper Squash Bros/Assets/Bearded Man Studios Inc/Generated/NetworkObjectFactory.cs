@@ -23,6 +23,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				switch (identity)
 				{
+					case CharacterDriverNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new CharacterDriverNetworkObject(networker, id, frame);
+						break;
 					case ChatManagerNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new ChatManagerNetworkObject(networker, id, frame);
