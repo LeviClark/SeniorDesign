@@ -8,6 +8,7 @@ public class CharacterDriver : CharacterDriverBehavior
     public float walkSpeed = 50f;
     public float gravity = -2;
     public float jumpHeight = 2f;
+    public bool canDoubleJump = true;
 
     private CharacterController controller;
     private Camera cam;
@@ -43,6 +44,7 @@ public class CharacterDriver : CharacterDriverBehavior
         //Reset falling speed if on the ground
         if (controller.isGrounded)
         {
+            canDoubleJump = true;
             speedY = 0;
         }
 
@@ -86,10 +88,17 @@ public class CharacterDriver : CharacterDriverBehavior
 
     void Jump()
     {
-        if (controller.isGrounded)
+        if (controller.isGrounded || canDoubleJump == true)
         {
+            
             float jumpVelocity = Mathf.Sqrt(-.2f * gravity * jumpHeight);
             speedY = jumpVelocity;
+
+            if(!controller.isGrounded && canDoubleJump) {
+                jumpVelocity = Mathf.Sqrt(-.2f * gravity * jumpHeight/2);
+                speedY = jumpVelocity;
+                canDoubleJump = false;
+            }
         }
     }
     
