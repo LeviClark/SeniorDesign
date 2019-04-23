@@ -4,6 +4,7 @@ using UnityEngine;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Lobby;
+using UnityEngine.UI;
 
 public class PlayerVer1 : PlayerVer1Behavior
 {
@@ -13,6 +14,8 @@ public class PlayerVer1 : PlayerVer1Behavior
     public float gravity = -3;
     public float jumpHeight = 1.15f;
     public bool canDoubleJump = true;
+	public int playerLives = 3;
+	public Text PlayerLives;
 
     private Camera cam;
 
@@ -56,6 +59,7 @@ public class PlayerVer1 : PlayerVer1Behavior
                     gameObject.GetComponent<Renderer>().material.color = Color.green;
                     break;
             }
+			PlayerLives.text = "Lives: " + playerLives;
 
             return;
         }
@@ -98,6 +102,7 @@ public class PlayerVer1 : PlayerVer1Behavior
         networkObject.lives = 3;
         networkObject.damage = 0;
         transform.position = spawn;
+		playerLives = networkObject.lives;
 
     }
 
@@ -184,6 +189,7 @@ public class PlayerVer1 : PlayerVer1Behavior
         {
             transform.position = spawn;
             networkObject.lives--;
+			playerLives--;
             networkObject.damage = 0;
         }
         
