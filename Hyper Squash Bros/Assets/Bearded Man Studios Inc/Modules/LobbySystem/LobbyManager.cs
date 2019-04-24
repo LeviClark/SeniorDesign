@@ -58,7 +58,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 				SetupComplete();
 				return;
 			}
-
+            
 
 			for (int i = 0; i < NetworkObject.NetworkObjects.Count; ++i)
 			{
