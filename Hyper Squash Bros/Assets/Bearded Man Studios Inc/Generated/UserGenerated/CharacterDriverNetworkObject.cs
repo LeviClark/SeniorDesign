@@ -109,10 +109,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (fieldAltered != null) fieldAltered("lives", _lives, timestep);
 		}
 		[ForgeGeneratedField]
-		private int _health;
-		public event FieldEvent<int> healthChanged;
-		public Interpolated<int> healthInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
-		public int health
+		private float _health;
+		public event FieldEvent<float> healthChanged;
+		public InterpolateFloat healthInterpolation = new InterpolateFloat() { LerpT = 0f, Enabled = false };
+		public float health
 		{
 			get { return _health; }
 			set
@@ -213,7 +213,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			livesInterpolation.current = _lives;
 			livesInterpolation.target = _lives;
 			RunChange_lives(timestep);
-			_health = UnityObjectMapper.Instance.Map<int>(payload);
+			_health = UnityObjectMapper.Instance.Map<float>(payload);
 			healthInterpolation.current = _health;
 			healthInterpolation.target = _health;
 			RunChange_health(timestep);
@@ -297,12 +297,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				if (healthInterpolation.Enabled)
 				{
-					healthInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
+					healthInterpolation.target = UnityObjectMapper.Instance.Map<float>(data);
 					healthInterpolation.Timestep = timestep;
 				}
 				else
 				{
-					_health = UnityObjectMapper.Instance.Map<int>(data);
+					_health = UnityObjectMapper.Instance.Map<float>(data);
 					RunChange_health(timestep);
 				}
 			}
@@ -343,7 +343,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			}
 			if (healthInterpolation.Enabled && !healthInterpolation.current.UnityNear(healthInterpolation.target, 0.0015f))
 			{
-				_health = (int)healthInterpolation.Interpolate();
+				_health = (float)healthInterpolation.Interpolate();
 				//RunChange_health(healthInterpolation.Timestep);
 			}
 			if (characterIDInterpolation.Enabled && !characterIDInterpolation.current.UnityNear(characterIDInterpolation.target, 0.0015f))

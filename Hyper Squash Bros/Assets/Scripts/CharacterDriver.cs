@@ -12,6 +12,7 @@ public class CharacterDriver : CharacterDriverBehavior
     public float jumpHeight = 2f;
     public float forceDamageModifier = 1.0f; //Percentage base damage/force modifier
     public float health = 100.0f;
+    public int playerLives = 3;
     public Vector3 velocity;//The actual velocity vector that the character is currently moving along
 
     private CharacterController controller;
@@ -19,6 +20,8 @@ public class CharacterDriver : CharacterDriverBehavior
     private float speedY;
     private bool canDoubleJump = true;
     private bool recoil = false;//Used to "ragdoll" punches
+
+    private Vector3 spawn = new Vector3(-11.0f, 12.5f);
 
     protected override void NetworkStart()
     {
@@ -48,7 +51,10 @@ public class CharacterDriver : CharacterDriverBehavior
             yield return null;
         }
     }
-
+    void Start()
+    {
+        transform.position = spawn;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -63,6 +69,8 @@ public class CharacterDriver : CharacterDriverBehavior
             //Assign position and rotation of this object to the values sent over the network
             transform.position = networkObject.position;
             transform.rotation = networkObject.rotation;
+            health = networkObject.health;
+            playerLives = networkObject.lives;
 
             //Since this isn't our character, exit this loop and do not check for input
             return;
@@ -105,9 +113,16 @@ public class CharacterDriver : CharacterDriverBehavior
         else {
             velocity = Vector3.zero;
         }
-
+        if (transform.position.y <= -16.0f || transform.position.x >= 40.0f || transform.position.x <= -40.0f)
+        {
+            transform.position = spawn;
+           
+            playerLives--;
+            health = 100;
+        }
         MeleeAttack();
-
+        networkObject.lives = playerLives;
+        networkObject.health = health;
         //Send the updated positions and rotations over the network
         networkObject.position = transform.position;
         networkObject.rotation = transform.rotation;
@@ -157,4 +172,7 @@ public class CharacterDriver : CharacterDriverBehavior
         velocity = velocity * force;
     }
     
+
+
+
 }
