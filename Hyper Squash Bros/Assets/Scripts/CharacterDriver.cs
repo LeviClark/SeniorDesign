@@ -7,9 +7,9 @@ using BeardedManStudios.Forge.Networking.Unity;
 
 public class CharacterDriver : CharacterDriverBehavior
 {
-    public float walkSpeed = 50f;
+    public float walkSpeed = 3f;
     public float gravity = -2;
-    public float jumpHeight = 2f;
+    public float jumpHeight = .5f;
     public float forceDamageModifier = 1.0f; //Percentage base damage/force modifier
     public float health = 100.0f;
     public Vector3 velocity;//The actual velocity vector that the character is currently moving along
@@ -19,11 +19,13 @@ public class CharacterDriver : CharacterDriverBehavior
     private float speedY;
     private bool canDoubleJump = true;
     private bool recoil = false;//Used to "ragdoll" punches
+    private Animator myAnimator;
 
     protected override void NetworkStart()
     {
         base.NetworkStart();
         controller = GetComponent<CharacterController>();
+        myAnimator = GetComponent<Animator>();
     }
 
     public override void TakeDamage(RpcArgs args)
@@ -92,13 +94,27 @@ public class CharacterDriver : CharacterDriverBehavior
         //Apply gathered input to character position/rotation
         //transform.Translate(Vector3.forward * Time.deltaTime * moveForward);
         //controller.Move(velocity);
+
+        if(Input.GetKey (KeyCode.A) || Input.GetKey(KeyCode.D) )
+        {
+            myAnimator.SetBool("isRunning", true);
+            myAnimator.SetBool("isIdle", false);
+        }
+        else{
+            myAnimator.SetBool("isRunning", false);
+            myAnimator.SetBool("isIdle", true);
+            
+        }
+
         if (direction > 0 && !recoil)
         {
+            myAnimator.CrossFade("Run", 0.1f);
             gameObject.transform.eulerAngles = new Vector3(0, 90, 0);
             velocity = transform.forward * Time.deltaTime * 5 * walkSpeed;
         }
         else if (direction < 0)
         {
+            myAnimator.CrossFade("Run", 0.1f);
             gameObject.transform.eulerAngles = new Vector3(0, -90, 0);
            velocity = transform.forward * Time.deltaTime * 5 * walkSpeed;
         }
@@ -106,7 +122,24 @@ public class CharacterDriver : CharacterDriverBehavior
             velocity = Vector3.zero;
         }
 
-        MeleeAttack();
+        /*
+        if (Input.GetMouseButtonDown(0))
+        {
+            myAnimator.SetBool("isHitting", true);
+            myAnimator.SetBool("isIdle", false);
+            myAnimator.CrossFade("Punch2", 0.1f);
+            MeleeAttack();
+               
+        }
+        else
+        {
+            myAnimator.SetBool("isHitting", false);
+            myAnimator.SetBool("isIdle", true);
+        }
+        */
+
+        
+        
 
         //Send the updated positions and rotations over the network
         networkObject.position = transform.position;
@@ -132,6 +165,8 @@ public class CharacterDriver : CharacterDriverBehavior
 
     void MeleeAttack() {
         if (Input.GetMouseButtonDown(0)) {
+            
+            
             Vector3 forward = transform.TransformDirection(-(Vector3.forward)) * 3;
             Debug.DrawRay(transform.position, forward, Color.blue);//Used for visual debugging
             RaycastHit hit;
@@ -148,6 +183,7 @@ public class CharacterDriver : CharacterDriverBehavior
                     //hit.collider.gameObject.GetComponent<CharacterDriver>().velocity = dir * hit.collider.gameObject.GetComponent<CharacterDriver>().forceDamageModifier * 5;
                 }
             }
+            
         }
     }
 
