@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedInterpol("{\"inter\":[0.15,0]")]
+	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0,0]")]
 	public partial class CharacterDriverNetworkObject : NetworkObject
 	{
-		public const int IDENTITY = 1;
+		public const int IDENTITY = 8;
 
 		private byte[] _dirtyFields = new byte[1];
 
@@ -49,7 +49,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		[ForgeGeneratedField]
 		private Quaternion _rotation;
 		public event FieldEvent<Quaternion> rotationChanged;
-		public InterpolateQuaternion rotationInterpolation = new InterpolateQuaternion() { LerpT = 0f, Enabled = false };
+		public InterpolateQuaternion rotationInterpolation = new InterpolateQuaternion() { LerpT = 0.15f, Enabled = true };
 		public Quaternion rotation
 		{
 			get { return _rotation; }
@@ -77,6 +77,99 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (rotationChanged != null) rotationChanged(_rotation, timestep);
 			if (fieldAltered != null) fieldAltered("rotation", _rotation, timestep);
 		}
+		[ForgeGeneratedField]
+		private int _lives;
+		public event FieldEvent<int> livesChanged;
+		public Interpolated<int> livesInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
+		public int lives
+		{
+			get { return _lives; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_lives == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[0] |= 0x4;
+				_lives = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetlivesDirty()
+		{
+			_dirtyFields[0] |= 0x4;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_lives(ulong timestep)
+		{
+			if (livesChanged != null) livesChanged(_lives, timestep);
+			if (fieldAltered != null) fieldAltered("lives", _lives, timestep);
+		}
+		[ForgeGeneratedField]
+		private int _health;
+		public event FieldEvent<int> healthChanged;
+		public Interpolated<int> healthInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
+		public int health
+		{
+			get { return _health; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_health == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[0] |= 0x8;
+				_health = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SethealthDirty()
+		{
+			_dirtyFields[0] |= 0x8;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_health(ulong timestep)
+		{
+			if (healthChanged != null) healthChanged(_health, timestep);
+			if (fieldAltered != null) fieldAltered("health", _health, timestep);
+		}
+		[ForgeGeneratedField]
+		private int _characterID;
+		public event FieldEvent<int> characterIDChanged;
+		public Interpolated<int> characterIDInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
+		public int characterID
+		{
+			get { return _characterID; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_characterID == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[0] |= 0x10;
+				_characterID = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetcharacterIDDirty()
+		{
+			_dirtyFields[0] |= 0x10;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_characterID(ulong timestep)
+		{
+			if (characterIDChanged != null) characterIDChanged(_characterID, timestep);
+			if (fieldAltered != null) fieldAltered("characterID", _characterID, timestep);
+		}
 
 		protected override void OwnershipChanged()
 		{
@@ -88,6 +181,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		{
 			positionInterpolation.current = positionInterpolation.target;
 			rotationInterpolation.current = rotationInterpolation.target;
+			livesInterpolation.current = livesInterpolation.target;
+			healthInterpolation.current = healthInterpolation.target;
+			characterIDInterpolation.current = characterIDInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }
@@ -96,6 +192,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		{
 			UnityObjectMapper.Instance.MapBytes(data, _position);
 			UnityObjectMapper.Instance.MapBytes(data, _rotation);
+			UnityObjectMapper.Instance.MapBytes(data, _lives);
+			UnityObjectMapper.Instance.MapBytes(data, _health);
+			UnityObjectMapper.Instance.MapBytes(data, _characterID);
 
 			return data;
 		}
@@ -110,6 +209,18 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			rotationInterpolation.current = _rotation;
 			rotationInterpolation.target = _rotation;
 			RunChange_rotation(timestep);
+			_lives = UnityObjectMapper.Instance.Map<int>(payload);
+			livesInterpolation.current = _lives;
+			livesInterpolation.target = _lives;
+			RunChange_lives(timestep);
+			_health = UnityObjectMapper.Instance.Map<int>(payload);
+			healthInterpolation.current = _health;
+			healthInterpolation.target = _health;
+			RunChange_health(timestep);
+			_characterID = UnityObjectMapper.Instance.Map<int>(payload);
+			characterIDInterpolation.current = _characterID;
+			characterIDInterpolation.target = _characterID;
+			RunChange_characterID(timestep);
 		}
 
 		protected override BMSByte SerializeDirtyFields()
@@ -121,6 +232,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _position);
 			if ((0x2 & _dirtyFields[0]) != 0)
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _rotation);
+			if ((0x4 & _dirtyFields[0]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _lives);
+			if ((0x8 & _dirtyFields[0]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _health);
+			if ((0x10 & _dirtyFields[0]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _characterID);
 
 			// Reset all the dirty fields
 			for (int i = 0; i < _dirtyFields.Length; i++)
@@ -163,6 +280,45 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					RunChange_rotation(timestep);
 				}
 			}
+			if ((0x4 & readDirtyFlags[0]) != 0)
+			{
+				if (livesInterpolation.Enabled)
+				{
+					livesInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
+					livesInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_lives = UnityObjectMapper.Instance.Map<int>(data);
+					RunChange_lives(timestep);
+				}
+			}
+			if ((0x8 & readDirtyFlags[0]) != 0)
+			{
+				if (healthInterpolation.Enabled)
+				{
+					healthInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
+					healthInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_health = UnityObjectMapper.Instance.Map<int>(data);
+					RunChange_health(timestep);
+				}
+			}
+			if ((0x10 & readDirtyFlags[0]) != 0)
+			{
+				if (characterIDInterpolation.Enabled)
+				{
+					characterIDInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
+					characterIDInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_characterID = UnityObjectMapper.Instance.Map<int>(data);
+					RunChange_characterID(timestep);
+				}
+			}
 		}
 
 		public override void InterpolateUpdate()
@@ -179,6 +335,21 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				_rotation = (Quaternion)rotationInterpolation.Interpolate();
 				//RunChange_rotation(rotationInterpolation.Timestep);
+			}
+			if (livesInterpolation.Enabled && !livesInterpolation.current.UnityNear(livesInterpolation.target, 0.0015f))
+			{
+				_lives = (int)livesInterpolation.Interpolate();
+				//RunChange_lives(livesInterpolation.Timestep);
+			}
+			if (healthInterpolation.Enabled && !healthInterpolation.current.UnityNear(healthInterpolation.target, 0.0015f))
+			{
+				_health = (int)healthInterpolation.Interpolate();
+				//RunChange_health(healthInterpolation.Timestep);
+			}
+			if (characterIDInterpolation.Enabled && !characterIDInterpolation.current.UnityNear(characterIDInterpolation.target, 0.0015f))
+			{
+				_characterID = (int)characterIDInterpolation.Interpolate();
+				//RunChange_characterID(characterIDInterpolation.Timestep);
 			}
 		}
 
