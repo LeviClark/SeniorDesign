@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0,0]")]
+	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0,0,0,0,0,0,0]")]
 	public partial class CharacterDriverNetworkObject : NetworkObject
 	{
 		public const int IDENTITY = 8;
 
-		private byte[] _dirtyFields = new byte[1];
+		private byte[] _dirtyFields = new byte[2];
 
 		#pragma warning disable 0067
 		public event FieldChangedEvent fieldAltered;
@@ -170,6 +170,161 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (characterIDChanged != null) characterIDChanged(_characterID, timestep);
 			if (fieldAltered != null) fieldAltered("characterID", _characterID, timestep);
 		}
+		[ForgeGeneratedField]
+		private bool _isRunning;
+		public event FieldEvent<bool> isRunningChanged;
+		public Interpolated<bool> isRunningInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
+		public bool isRunning
+		{
+			get { return _isRunning; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_isRunning == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[0] |= 0x20;
+				_isRunning = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetisRunningDirty()
+		{
+			_dirtyFields[0] |= 0x20;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_isRunning(ulong timestep)
+		{
+			if (isRunningChanged != null) isRunningChanged(_isRunning, timestep);
+			if (fieldAltered != null) fieldAltered("isRunning", _isRunning, timestep);
+		}
+		[ForgeGeneratedField]
+		private bool _isIdle;
+		public event FieldEvent<bool> isIdleChanged;
+		public Interpolated<bool> isIdleInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
+		public bool isIdle
+		{
+			get { return _isIdle; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_isIdle == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[0] |= 0x40;
+				_isIdle = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetisIdleDirty()
+		{
+			_dirtyFields[0] |= 0x40;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_isIdle(ulong timestep)
+		{
+			if (isIdleChanged != null) isIdleChanged(_isIdle, timestep);
+			if (fieldAltered != null) fieldAltered("isIdle", _isIdle, timestep);
+		}
+		[ForgeGeneratedField]
+		private bool _isAttackingRight;
+		public event FieldEvent<bool> isAttackingRightChanged;
+		public Interpolated<bool> isAttackingRightInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
+		public bool isAttackingRight
+		{
+			get { return _isAttackingRight; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_isAttackingRight == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[0] |= 0x80;
+				_isAttackingRight = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetisAttackingRightDirty()
+		{
+			_dirtyFields[0] |= 0x80;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_isAttackingRight(ulong timestep)
+		{
+			if (isAttackingRightChanged != null) isAttackingRightChanged(_isAttackingRight, timestep);
+			if (fieldAltered != null) fieldAltered("isAttackingRight", _isAttackingRight, timestep);
+		}
+		[ForgeGeneratedField]
+		private bool _isHit;
+		public event FieldEvent<bool> isHitChanged;
+		public Interpolated<bool> isHitInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
+		public bool isHit
+		{
+			get { return _isHit; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_isHit == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[1] |= 0x1;
+				_isHit = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetisHitDirty()
+		{
+			_dirtyFields[1] |= 0x1;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_isHit(ulong timestep)
+		{
+			if (isHitChanged != null) isHitChanged(_isHit, timestep);
+			if (fieldAltered != null) fieldAltered("isHit", _isHit, timestep);
+		}
+		[ForgeGeneratedField]
+		private bool _isAttackingLeft;
+		public event FieldEvent<bool> isAttackingLeftChanged;
+		public Interpolated<bool> isAttackingLeftInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
+		public bool isAttackingLeft
+		{
+			get { return _isAttackingLeft; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_isAttackingLeft == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[1] |= 0x2;
+				_isAttackingLeft = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetisAttackingLeftDirty()
+		{
+			_dirtyFields[1] |= 0x2;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_isAttackingLeft(ulong timestep)
+		{
+			if (isAttackingLeftChanged != null) isAttackingLeftChanged(_isAttackingLeft, timestep);
+			if (fieldAltered != null) fieldAltered("isAttackingLeft", _isAttackingLeft, timestep);
+		}
 
 		protected override void OwnershipChanged()
 		{
@@ -184,6 +339,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			livesInterpolation.current = livesInterpolation.target;
 			healthInterpolation.current = healthInterpolation.target;
 			characterIDInterpolation.current = characterIDInterpolation.target;
+			isRunningInterpolation.current = isRunningInterpolation.target;
+			isIdleInterpolation.current = isIdleInterpolation.target;
+			isAttackingRightInterpolation.current = isAttackingRightInterpolation.target;
+			isHitInterpolation.current = isHitInterpolation.target;
+			isAttackingLeftInterpolation.current = isAttackingLeftInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }
@@ -195,6 +355,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			UnityObjectMapper.Instance.MapBytes(data, _lives);
 			UnityObjectMapper.Instance.MapBytes(data, _health);
 			UnityObjectMapper.Instance.MapBytes(data, _characterID);
+			UnityObjectMapper.Instance.MapBytes(data, _isRunning);
+			UnityObjectMapper.Instance.MapBytes(data, _isIdle);
+			UnityObjectMapper.Instance.MapBytes(data, _isAttackingRight);
+			UnityObjectMapper.Instance.MapBytes(data, _isHit);
+			UnityObjectMapper.Instance.MapBytes(data, _isAttackingLeft);
 
 			return data;
 		}
@@ -221,6 +386,26 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			characterIDInterpolation.current = _characterID;
 			characterIDInterpolation.target = _characterID;
 			RunChange_characterID(timestep);
+			_isRunning = UnityObjectMapper.Instance.Map<bool>(payload);
+			isRunningInterpolation.current = _isRunning;
+			isRunningInterpolation.target = _isRunning;
+			RunChange_isRunning(timestep);
+			_isIdle = UnityObjectMapper.Instance.Map<bool>(payload);
+			isIdleInterpolation.current = _isIdle;
+			isIdleInterpolation.target = _isIdle;
+			RunChange_isIdle(timestep);
+			_isAttackingRight = UnityObjectMapper.Instance.Map<bool>(payload);
+			isAttackingRightInterpolation.current = _isAttackingRight;
+			isAttackingRightInterpolation.target = _isAttackingRight;
+			RunChange_isAttackingRight(timestep);
+			_isHit = UnityObjectMapper.Instance.Map<bool>(payload);
+			isHitInterpolation.current = _isHit;
+			isHitInterpolation.target = _isHit;
+			RunChange_isHit(timestep);
+			_isAttackingLeft = UnityObjectMapper.Instance.Map<bool>(payload);
+			isAttackingLeftInterpolation.current = _isAttackingLeft;
+			isAttackingLeftInterpolation.target = _isAttackingLeft;
+			RunChange_isAttackingLeft(timestep);
 		}
 
 		protected override BMSByte SerializeDirtyFields()
@@ -238,6 +423,16 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _health);
 			if ((0x10 & _dirtyFields[0]) != 0)
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _characterID);
+			if ((0x20 & _dirtyFields[0]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isRunning);
+			if ((0x40 & _dirtyFields[0]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isIdle);
+			if ((0x80 & _dirtyFields[0]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isAttackingRight);
+			if ((0x1 & _dirtyFields[1]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isHit);
+			if ((0x2 & _dirtyFields[1]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isAttackingLeft);
 
 			// Reset all the dirty fields
 			for (int i = 0; i < _dirtyFields.Length; i++)
@@ -319,6 +514,71 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					RunChange_characterID(timestep);
 				}
 			}
+			if ((0x20 & readDirtyFlags[0]) != 0)
+			{
+				if (isRunningInterpolation.Enabled)
+				{
+					isRunningInterpolation.target = UnityObjectMapper.Instance.Map<bool>(data);
+					isRunningInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_isRunning = UnityObjectMapper.Instance.Map<bool>(data);
+					RunChange_isRunning(timestep);
+				}
+			}
+			if ((0x40 & readDirtyFlags[0]) != 0)
+			{
+				if (isIdleInterpolation.Enabled)
+				{
+					isIdleInterpolation.target = UnityObjectMapper.Instance.Map<bool>(data);
+					isIdleInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_isIdle = UnityObjectMapper.Instance.Map<bool>(data);
+					RunChange_isIdle(timestep);
+				}
+			}
+			if ((0x80 & readDirtyFlags[0]) != 0)
+			{
+				if (isAttackingRightInterpolation.Enabled)
+				{
+					isAttackingRightInterpolation.target = UnityObjectMapper.Instance.Map<bool>(data);
+					isAttackingRightInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_isAttackingRight = UnityObjectMapper.Instance.Map<bool>(data);
+					RunChange_isAttackingRight(timestep);
+				}
+			}
+			if ((0x1 & readDirtyFlags[1]) != 0)
+			{
+				if (isHitInterpolation.Enabled)
+				{
+					isHitInterpolation.target = UnityObjectMapper.Instance.Map<bool>(data);
+					isHitInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_isHit = UnityObjectMapper.Instance.Map<bool>(data);
+					RunChange_isHit(timestep);
+				}
+			}
+			if ((0x2 & readDirtyFlags[1]) != 0)
+			{
+				if (isAttackingLeftInterpolation.Enabled)
+				{
+					isAttackingLeftInterpolation.target = UnityObjectMapper.Instance.Map<bool>(data);
+					isAttackingLeftInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_isAttackingLeft = UnityObjectMapper.Instance.Map<bool>(data);
+					RunChange_isAttackingLeft(timestep);
+				}
+			}
 		}
 
 		public override void InterpolateUpdate()
@@ -351,12 +611,37 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				_characterID = (int)characterIDInterpolation.Interpolate();
 				//RunChange_characterID(characterIDInterpolation.Timestep);
 			}
+			if (isRunningInterpolation.Enabled && !isRunningInterpolation.current.UnityNear(isRunningInterpolation.target, 0.0015f))
+			{
+				_isRunning = (bool)isRunningInterpolation.Interpolate();
+				//RunChange_isRunning(isRunningInterpolation.Timestep);
+			}
+			if (isIdleInterpolation.Enabled && !isIdleInterpolation.current.UnityNear(isIdleInterpolation.target, 0.0015f))
+			{
+				_isIdle = (bool)isIdleInterpolation.Interpolate();
+				//RunChange_isIdle(isIdleInterpolation.Timestep);
+			}
+			if (isAttackingRightInterpolation.Enabled && !isAttackingRightInterpolation.current.UnityNear(isAttackingRightInterpolation.target, 0.0015f))
+			{
+				_isAttackingRight = (bool)isAttackingRightInterpolation.Interpolate();
+				//RunChange_isAttackingRight(isAttackingRightInterpolation.Timestep);
+			}
+			if (isHitInterpolation.Enabled && !isHitInterpolation.current.UnityNear(isHitInterpolation.target, 0.0015f))
+			{
+				_isHit = (bool)isHitInterpolation.Interpolate();
+				//RunChange_isHit(isHitInterpolation.Timestep);
+			}
+			if (isAttackingLeftInterpolation.Enabled && !isAttackingLeftInterpolation.current.UnityNear(isAttackingLeftInterpolation.target, 0.0015f))
+			{
+				_isAttackingLeft = (bool)isAttackingLeftInterpolation.Interpolate();
+				//RunChange_isAttackingLeft(isAttackingLeftInterpolation.Timestep);
+			}
 		}
 
 		private void Initialize()
 		{
 			if (readDirtyFlags == null)
-				readDirtyFlags = new byte[1];
+				readDirtyFlags = new byte[2];
 
 		}
 
