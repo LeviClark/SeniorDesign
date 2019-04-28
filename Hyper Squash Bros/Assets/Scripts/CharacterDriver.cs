@@ -4,6 +4,7 @@ using UnityEngine;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Forge.Networking.Lobby;
 
 public class CharacterDriver : CharacterDriverBehavior
 {
@@ -13,6 +14,8 @@ public class CharacterDriver : CharacterDriverBehavior
     public float forceDamageModifier = 1.0f; //Percentage base damage/force modifier
     public float health = 100.0f;
     public Vector3 velocity;//The actual velocity vector that the character is currently moving along
+    private uint playerNumber;
+    private int playerLives;
 
     private CharacterController controller;
     private Camera cam;
@@ -21,11 +24,29 @@ public class CharacterDriver : CharacterDriverBehavior
     private bool recoil = false;//Used to "ragdoll" punches
     private Animator myAnimator;
 
+    public Vector3 spawn = new Vector3(0.0f, 12.5f);
+
     protected override void NetworkStart()
     {
         base.NetworkStart();
         controller = GetComponent<CharacterController>();
         myAnimator = GetComponent<Animator>();
+        playerNumber = LobbyService.Instance.MyMockPlayer.NetworkId;
+        switch (playerNumber)
+        {
+            case 0:
+                spawn = new Vector3(-11.0f, 12.5f);
+                break;
+            case 1:
+                spawn = new Vector3(-5.0f, 12.5f);
+                break;
+            case 2:
+                spawn = new Vector3(5.0f, 12.5f);
+                break;
+            case 3:
+                spawn = new Vector3(11.0f, 12.5f);
+                break;
+        }
     }
 
     public override void TakeDamage(RpcArgs args)
@@ -50,7 +71,26 @@ public class CharacterDriver : CharacterDriverBehavior
             yield return null;
         }
     }
+    void Start()
+    {
+        playerLives = 3;
+        switch (playerNumber)
+        {
+            case 0:
+                spawn = new Vector3(-11.0f, 12.5f);
+                break;
+            case 1:
+                spawn = new Vector3(-5.0f, 12.5f);
+                break;
+            case 2:
+                spawn = new Vector3(5.0f, 12.5f);
+                break;
+            case 3:
+                spawn = new Vector3(11.0f, 12.5f);
+                break;
+        }
 
+    }
     // Update is called once per frame
     void Update()
     {
@@ -63,6 +103,10 @@ public class CharacterDriver : CharacterDriverBehavior
         if (!networkObject.IsOwner)
         {
             //Assign position and rotation of this object to the values sent over the network
+            
+            myAnimator.SetBool("isIdle", networkObject.isIdle);
+            myAnimator.SetBool("isRunning", networkObject.isRunning);
+            myAnimator.SetBool("isHitting", networkObject.isAttacking);
             transform.position = networkObject.position;
             transform.rotation = networkObject.rotation;
 
@@ -122,6 +166,7 @@ public class CharacterDriver : CharacterDriverBehavior
             velocity = Vector3.zero;
         }
 
+
         /*
         if (Input.GetMouseButtonDown(0))
         {
@@ -138,10 +183,20 @@ public class CharacterDriver : CharacterDriverBehavior
         }
         */
 
-        
-        
+        if (transform.position.y <= -16.0f || transform.position.x >= 40.0f || transform.position.x <= -40.0f)
+        {
+            transform.position = spawn;
+            networkObject.lives--;
+            playerLives--;
+            networkObject.health = 1000;
+        }
+
 
         //Send the updated positions and rotations over the network
+
+        networkObject.isAttacking = myAnimator.GetBool("isHitting");
+        networkObject.isRunning = myAnimator.GetBool("isRunning");
+        networkObject.isIdle = myAnimator.GetBool("isIdle");
         networkObject.position = transform.position;
         networkObject.rotation = transform.rotation;
 
