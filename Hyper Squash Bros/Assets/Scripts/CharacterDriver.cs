@@ -176,7 +176,7 @@ public class CharacterDriver : CharacterDriverBehavior
             myAnimator.SetBool("isAttackingRight", true);
         }
         else if (Input.GetMouseButtonDown(0)){
-            myAnimator.SetBool("isAttackingRight", true);
+            myAnimator.SetBool("isAttackingLeft", true);
         }
         else
         {
@@ -227,13 +227,14 @@ public class CharacterDriver : CharacterDriverBehavior
         if (Input.GetMouseButtonDown(0)) {
             
             
-            Vector3 forward = transform.TransformDirection(-(Vector3.forward)) * 3;
+            Vector3 forward = transform.TransformDirection((Vector3.forward)) * 3;
             Debug.DrawRay(transform.position, forward, Color.blue);//Used for visual debugging
             RaycastHit hit;
 
             if (Physics.Raycast(transform.position, forward, out hit)) {
                 Debug.Log("Hit " + hit.collider.gameObject.tag + "!");
                 if (hit.collider.gameObject.tag == "Player") {
+                    Debug.Log("HIT A PLAYER");
                     //Grab reference to the player's RPC call and call it on all clients
                     hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All);
 
