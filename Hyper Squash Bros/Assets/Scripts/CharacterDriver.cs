@@ -106,7 +106,8 @@ public class CharacterDriver : CharacterDriverBehavior
             
             myAnimator.SetBool("isIdle", networkObject.isIdle);
             myAnimator.SetBool("isRunning", networkObject.isRunning);
-            myAnimator.SetBool("isHitting", networkObject.isAttacking);
+            myAnimator.SetBool("isAttackingRight", networkObject.isAttackingRight);
+            myAnimator.SetBool("isAttackingLeft", networkObject.isAttackingLeft);
             transform.position = networkObject.position;
             transform.rotation = networkObject.rotation;
 
@@ -167,9 +168,6 @@ public class CharacterDriver : CharacterDriverBehavior
         }
 
         if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.A))
-
-        
-        if (Input.GetMouseButtonDown(0))
         {
             myAnimator.SetBool("isAttackingLeft", true);
         }
@@ -200,7 +198,8 @@ public class CharacterDriver : CharacterDriverBehavior
 
         //Send the updated positions and rotations over the network
 
-        networkObject.isAttacking = myAnimator.GetBool("isHitting");
+        networkObject.isAttackingRight = myAnimator.GetBool("isAttackingRight");
+        networkObject.isAttackingLeft = myAnimator.GetBool("isAttackingLeft");
         networkObject.isRunning = myAnimator.GetBool("isRunning");
         networkObject.isIdle = myAnimator.GetBool("isIdle");
         networkObject.position = transform.position;
