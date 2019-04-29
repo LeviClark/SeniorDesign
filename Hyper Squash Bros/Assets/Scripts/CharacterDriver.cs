@@ -196,13 +196,13 @@ public class CharacterDriver : CharacterDriverBehavior
 
         if (direction > 0 && !recoil)
         {
-           // myAnimator.CrossFade("Run", 0.1f);
+            myAnimator.CrossFade("Run", 0.1f);
             gameObject.transform.eulerAngles = new Vector3(0, 90, 0);
             velocity = transform.forward * Time.deltaTime * 5 * walkSpeed;
         }
         else if (direction < 0)
         {
-            //myAnimator.CrossFade("Armature|Run", 0.1f);
+            myAnimator.CrossFade("Run", 0.1f);
             gameObject.transform.eulerAngles = new Vector3(0, -90, 0);
            velocity = transform.forward * Time.deltaTime * 5 * walkSpeed;
         }
@@ -210,23 +210,20 @@ public class CharacterDriver : CharacterDriverBehavior
             velocity = Vector3.zero;
         }
 
-        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.A))
+        /*
+        if (Input.GetMouseButtonDown(0))
         {
-            myAnimator.SetBool("isAttackingLeft", true);
-        }
-        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.D))
-        {
-            myAnimator.SetBool("isAttackingRight", true);
-        }
-        else if (Input.GetMouseButtonDown(0)){
-            myAnimator.SetBool("isAttackingRight", true);
+            myAnimator.SetBool("isHitting", true);
+            myAnimator.SetBool("isIdle", false);
+            myAnimator.CrossFade("Punch2", 0.1f);
+            MeleeAttack();
+               
         }
         else
         {
-            myAnimator.SetBool("isAttackingLeft", false);
-            myAnimator.SetBool("isAttackingRight", false);
-
-        }
+            myAnimator.SetBool("isHitting", false);
+            myAnimator.SetBool("isIdle", true);
+        }*/
         
 
         MeleeAttack();
