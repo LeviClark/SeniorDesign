@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterDriverNetworkObject:
-  - {fileID: 1818515382137002371, guid: 6212eedc64bb6cc448c9e92b2408242c, type: 3}
+  - {fileID: 7489170575029195911, guid: 16f6b1e6ee39f4d4f8c11fefda298e7e, type: 3}
   ChatManagerNetworkObject:
   - {fileID: 1000012032569418, guid: b454b1be0b2c3fa4fb48430867af7566, type: 3}
   CubeForgeGameNetworkObject: []
