@@ -5,17 +5,31 @@ using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking.Lobby;
+using UnityEngine.UI;
+using System;
+
 
 public class CharacterDriver : CharacterDriverBehavior
 {
+
+    public GameObject playerInfo;
     public float walkSpeed = 3f;
     public float gravity = -2;
     public float jumpHeight = .5f;
     public float forceDamageModifier = 1.0f; //Percentage base damage/force modifier
-    public float health = 100.0f;
+    int health = 100;
     public Vector3 velocity;//The actual velocity vector that the character is currently moving along
     private uint playerNumber;
     private int playerLives;
+
+    public Text healthText;
+    public Text lifeText;
+    public Text nameText;
+
+    private bool justDied = false;
+    long deathTick;
+    TimeSpan elapsedSinceDeath;
+
 
     private CharacterController controller;
     private Camera cam;
@@ -47,6 +61,9 @@ public class CharacterDriver : CharacterDriverBehavior
                 spawn = new Vector3(11.0f, 12.5f);
                 break;
         }
+
+        networkObject.lives = 3;
+        
     }
 
     public override void TakeDamage(RpcArgs args)
@@ -73,6 +90,8 @@ public class CharacterDriver : CharacterDriverBehavior
     }
     void Start()
     {
+     
+        Debug.Log("Starting");
         playerLives = 3;
         switch (playerNumber)
         {
@@ -90,10 +109,37 @@ public class CharacterDriver : CharacterDriverBehavior
                 break;
         }
 
+        //wtf
+        GameObject asset = Resources.Load("PlayerInfo") as GameObject;
+        playerInfo = Instantiate(asset, GameObject.FindGameObjectsWithTag("Canvas")[0].transform);
+        
+        healthText = playerInfo.transform.Find("Health").GetComponent<Text>();
+        lifeText = playerInfo.transform.Find("Lives").GetComponent<Text>();
+        nameText = playerInfo.transform.Find("Name").GetComponent<Text>();
+      
+
+        foreach(IClientMockPlayer player in LobbyService.Instance.MasterLobby.LobbyPlayers)
+        {
+            if (player.NetworkId == networkObject.MyPlayerId)
+            {
+                nameText.text = player.Name;
+            }
+        }
+        //nameText.text = LobbyService.Instance.MyMockPlayer.Name;
+        
     }
     // Update is called once per frame
     void Update()
     {
+        if (controller == null)
+        {
+            return;
+        }
+        if (networkObject == null)
+        {
+            return;
+        }
+        
         //TODO: TEMP
         if (Input.GetKey(KeyCode.Escape)) {
             Application.Quit();
@@ -110,7 +156,12 @@ public class CharacterDriver : CharacterDriverBehavior
             myAnimator.SetBool("isAttackingLeft", networkObject.isAttackingLeft);
             transform.position = networkObject.position;
             transform.rotation = networkObject.rotation;
+            lifeText.text = "Lives: "+ networkObject.lives.ToString();
+            healthText.text = "Health: "+ networkObject.health.ToString();
 
+
+            
+            
             //Since this isn't our character, exit this loop and do not check for input
             return;
         }
@@ -190,14 +241,30 @@ public class CharacterDriver : CharacterDriverBehavior
         if (transform.position.y <= -16.0f || transform.position.x >= 40.0f || transform.position.x <= -40.0f)
         {
             transform.position = spawn;
-            networkObject.lives--;
-            playerLives--;
-            networkObject.health = 100;
+
+            if (!justDied)
+            {
+                health = 100;
+                justDied = true;
+                deathTick = DateTime.Now.Ticks;
+                playerLives--;
+            }
+        }
+        if (justDied)
+        {
+            elapsedSinceDeath = new TimeSpan(DateTime.Now.Ticks - deathTick);
+            if (elapsedSinceDeath.TotalSeconds > 1)
+            {
+                justDied = false;
+            }
         }
 
-
+        networkObject.health = health;
         //Send the updated positions and rotations over the network
-
+        networkObject.lives = playerLives;
+        lifeText.text = "Lives: " + networkObject.lives.ToString();
+        healthText.text = "Health: " + networkObject.health.ToString();
+        
         networkObject.isAttackingRight = myAnimator.GetBool("isAttackingRight");
         networkObject.isAttackingLeft = myAnimator.GetBool("isAttackingLeft");
         networkObject.isRunning = myAnimator.GetBool("isRunning");
@@ -253,5 +320,12 @@ public class CharacterDriver : CharacterDriverBehavior
         velocity = dir;
         velocity = velocity * force;
     }
-    
+    private void OnApplicationQuit()
+    {
+        //removes the user from everyone else's game
+        //playerInfo.SetActive(false);
+        networkObject.Destroy();
+    }
+
+
 }
