@@ -61,6 +61,7 @@ public class CharacterDriver : CharacterDriverBehavior
                 spawn = new Vector3(11.0f, 12.5f);
                 break;
         }
+
         networkObject.lives = 3;
         
     }
