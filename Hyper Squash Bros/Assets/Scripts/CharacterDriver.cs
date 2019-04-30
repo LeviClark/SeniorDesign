@@ -117,8 +117,15 @@ public class CharacterDriver : CharacterDriverBehavior
         nameText = playerInfo.transform.Find("Name").GetComponent<Text>();
       
 
-        nameText.text = LobbyService.Instance.MyMockPlayer.Name;
-
+        foreach(IClientMockPlayer player in LobbyService.Instance.MasterLobby.LobbyPlayers)
+        {
+            if (player.NetworkId == networkObject.MyPlayerId)
+            {
+                nameText.text = player.Name;
+            }
+        }
+        //nameText.text = LobbyService.Instance.MyMockPlayer.Name;
+        
     }
     // Update is called once per frame
     void Update()
@@ -314,6 +321,7 @@ public class CharacterDriver : CharacterDriverBehavior
     private void OnApplicationQuit()
     {
         //removes the user from everyone else's game
+        //playerInfo.SetActive(false);
         networkObject.Destroy();
     }
 
