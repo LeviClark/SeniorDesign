@@ -76,9 +76,10 @@ public class CharacterDriver : CharacterDriverBehavior
             //this.forceDamageModifier = forceDamageModifier + .1f;
             //this.StartCoroutine("ResetRecoil", forceDamageModifier);
             //this.recoil = true;
-           
-
-               health -= 10;
+            Vector3 hitForce = args.GetNext<Vector3>();
+            controller.attachedRigidbody.AddForce(hitForce);
+            
+            health -= 10;
             
         });
     }
@@ -336,7 +337,12 @@ public class CharacterDriver : CharacterDriverBehavior
                 if (hit.collider.gameObject.tag == "Player") {
                     Debug.Log("HIT A PLAYER");
                     //Grab reference to the player's RPC call and call it on all clients
-                    hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All);
+                    float xDif = hit.collider.gameObject.transform.position.x - gameObject.transform.position.x;
+                    float yDif = hit.collider.gameObject.transform.position.y - gameObject.transform.position.y;
+                    Vector3 force = new Vector3(xDif, yDif);
+                    force = Vector3.Normalize(force);
+                    force = new Vector3(force.x * 2, force.y * 2);
+                    hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All, force);
 
                     //Used for knockback
                     //Vector3 dir = hit.collider.gameObject.transform.position - gameObject.transform.position;
