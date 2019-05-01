@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"Vector3\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"position\"]]")]
+	[GeneratedRPC("{\"types\":[[]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[]]")]
 	public abstract partial class CharacterDriverBehavior : NetworkBehavior
 	{
 		public const byte RPC_TAKE_DAMAGE = 0 + 5;
@@ -22,7 +22,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
-			networkObject.RegisterRpc("TakeDamage", TakeDamage, typeof(Vector3));
+			networkObject.RegisterRpc("TakeDamage", TakeDamage);
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -101,7 +101,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		/// <summary>
 		/// Arguments:
-		/// Vector3 position
 		/// </summary>
 		public abstract void TakeDamage(RpcArgs args);
 
