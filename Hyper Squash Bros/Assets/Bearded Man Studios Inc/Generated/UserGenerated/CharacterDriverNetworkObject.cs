@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0,0,0,0,0,0,0]")]
+	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0,0,0,0,0,0,0,0]")]
 	public partial class CharacterDriverNetworkObject : NetworkObject
 	{
 		public const int IDENTITY = 8;
@@ -325,6 +325,37 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (isAttackingLeftChanged != null) isAttackingLeftChanged(_isAttackingLeft, timestep);
 			if (fieldAltered != null) fieldAltered("isAttackingLeft", _isAttackingLeft, timestep);
 		}
+		[ForgeGeneratedField]
+		private bool _isShooting;
+		public event FieldEvent<bool> isShootingChanged;
+		public Interpolated<bool> isShootingInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
+		public bool isShooting
+		{
+			get { return _isShooting; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_isShooting == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[1] |= 0x4;
+				_isShooting = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetisShootingDirty()
+		{
+			_dirtyFields[1] |= 0x4;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_isShooting(ulong timestep)
+		{
+			if (isShootingChanged != null) isShootingChanged(_isShooting, timestep);
+			if (fieldAltered != null) fieldAltered("isShooting", _isShooting, timestep);
+		}
 
 		protected override void OwnershipChanged()
 		{
@@ -344,6 +375,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			isAttackingRightInterpolation.current = isAttackingRightInterpolation.target;
 			isHitInterpolation.current = isHitInterpolation.target;
 			isAttackingLeftInterpolation.current = isAttackingLeftInterpolation.target;
+			isShootingInterpolation.current = isShootingInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }
@@ -360,6 +392,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			UnityObjectMapper.Instance.MapBytes(data, _isAttackingRight);
 			UnityObjectMapper.Instance.MapBytes(data, _isHit);
 			UnityObjectMapper.Instance.MapBytes(data, _isAttackingLeft);
+			UnityObjectMapper.Instance.MapBytes(data, _isShooting);
 
 			return data;
 		}
@@ -406,6 +439,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			isAttackingLeftInterpolation.current = _isAttackingLeft;
 			isAttackingLeftInterpolation.target = _isAttackingLeft;
 			RunChange_isAttackingLeft(timestep);
+			_isShooting = UnityObjectMapper.Instance.Map<bool>(payload);
+			isShootingInterpolation.current = _isShooting;
+			isShootingInterpolation.target = _isShooting;
+			RunChange_isShooting(timestep);
 		}
 
 		protected override BMSByte SerializeDirtyFields()
@@ -433,6 +470,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isHit);
 			if ((0x2 & _dirtyFields[1]) != 0)
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isAttackingLeft);
+			if ((0x4 & _dirtyFields[1]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _isShooting);
 
 			// Reset all the dirty fields
 			for (int i = 0; i < _dirtyFields.Length; i++)
@@ -579,6 +618,19 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					RunChange_isAttackingLeft(timestep);
 				}
 			}
+			if ((0x4 & readDirtyFlags[1]) != 0)
+			{
+				if (isShootingInterpolation.Enabled)
+				{
+					isShootingInterpolation.target = UnityObjectMapper.Instance.Map<bool>(data);
+					isShootingInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_isShooting = UnityObjectMapper.Instance.Map<bool>(data);
+					RunChange_isShooting(timestep);
+				}
+			}
 		}
 
 		public override void InterpolateUpdate()
@@ -635,6 +687,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				_isAttackingLeft = (bool)isAttackingLeftInterpolation.Interpolate();
 				//RunChange_isAttackingLeft(isAttackingLeftInterpolation.Timestep);
+			}
+			if (isShootingInterpolation.Enabled && !isShootingInterpolation.current.UnityNear(isShootingInterpolation.target, 0.0015f))
+			{
+				_isShooting = (bool)isShootingInterpolation.Interpolate();
+				//RunChange_isShooting(isShootingInterpolation.Timestep);
 			}
 		}
 

@@ -76,8 +76,11 @@ public class CharacterDriver : CharacterDriverBehavior
             //this.forceDamageModifier = forceDamageModifier + .1f;
             //this.StartCoroutine("ResetRecoil", forceDamageModifier);
             //this.recoil = true;
-
+            Vector3 hitForce = args.GetNext<Vector3>();
+            controller.attachedRigidbody.AddForce(hitForce);
+            
             health -= 10;
+            
         });
     }
 
@@ -159,7 +162,12 @@ public class CharacterDriver : CharacterDriverBehavior
             transform.rotation = networkObject.rotation;
             lifeText.text = "Lives: "+ networkObject.lives.ToString();
             healthText.text = "Health: "+ networkObject.health.ToString();
+            myAnimator.SetBool("isShooting", networkObject.isShooting);
+            if (networkObject.lives <= 0)
+            {
+                gameObject.SetActive(false);
 
+            }
 
             
             
@@ -188,9 +196,7 @@ public class CharacterDriver : CharacterDriverBehavior
 
         velocity = velocity + (Vector3.up * speedY);
         controller.Move(velocity);
-        //Apply gathered input to character position/rotation
-        //transform.Translate(Vector3.forward * Time.deltaTime * moveForward);
-        //controller.Move(velocity);
+      
 
         if(Input.GetKey (KeyCode.A) || Input.GetKey(KeyCode.D) )
         {
@@ -260,6 +266,14 @@ public class CharacterDriver : CharacterDriverBehavior
                 playerLives--;
             }
         }
+        if (health == 0)
+        {
+            transform.position = spawn;
+            justDied = true;
+            health = 100;
+            deathTick = DateTime.Now.Ticks;
+            playerLives--;
+        }
         if (justDied)
         {
             elapsedSinceDeath = new TimeSpan(DateTime.Now.Ticks - deathTick);
@@ -268,6 +282,7 @@ public class CharacterDriver : CharacterDriverBehavior
                 justDied = false;
             }
         }
+        
 
         networkObject.health = health;
         //Send the updated positions and rotations over the network
@@ -279,9 +294,18 @@ public class CharacterDriver : CharacterDriverBehavior
         networkObject.isAttackingLeft = myAnimator.GetBool("isAttackingLeft");
         networkObject.isRunning = myAnimator.GetBool("isRunning");
         networkObject.isIdle = myAnimator.GetBool("isIdle");
+        networkObject.isShooting = myAnimator.GetBool("isShooting");
+        if (justDied)
+        {
+            networkObject.SnapInterpolations();
+        }
+        if (playerLives <= 0)
+        {
+            gameObject.SetActive(false);
+        }
         networkObject.position = transform.position;
         networkObject.rotation = transform.rotation;
-
+        
     }
     
     void Jump()
@@ -313,7 +337,12 @@ public class CharacterDriver : CharacterDriverBehavior
                 if (hit.collider.gameObject.tag == "Player") {
                     Debug.Log("HIT A PLAYER");
                     //Grab reference to the player's RPC call and call it on all clients
-                    hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All);
+                    float xDif = hit.collider.gameObject.transform.position.x - gameObject.transform.position.x;
+                    float yDif = hit.collider.gameObject.transform.position.y - gameObject.transform.position.y;
+                    Vector3 force = new Vector3(xDif, yDif);
+                    force = Vector3.Normalize(force);
+                    force = new Vector3(force.x * 2, force.y * 2);
+                    hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All, force);
 
                     //Used for knockback
                     //Vector3 dir = hit.collider.gameObject.transform.position - gameObject.transform.position;
@@ -334,6 +363,7 @@ public class CharacterDriver : CharacterDriverBehavior
     {
         //removes the user from everyone else's game
         //playerInfo.SetActive(false);
+        gameObject.SetActive(false);
         networkObject.Destroy();
     }
 
