@@ -7,6 +7,7 @@ using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking.Lobby;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
 
 
 public class CharacterDriver : CharacterDriverBehavior
@@ -76,8 +77,8 @@ public class CharacterDriver : CharacterDriverBehavior
             //this.forceDamageModifier = forceDamageModifier + .1f;
             //this.StartCoroutine("ResetRecoil", forceDamageModifier);
             //this.recoil = true;
-            Vector3 hitForce = args.GetNext<Vector3>();
-            controller.attachedRigidbody.AddForce(hitForce);
+            //Vector3 hitForce = args.GetNext<Vector3>();
+           // controller.attachedRigidbody.AddForce(hitForce);
             
             health -= 10;
             
@@ -123,11 +124,12 @@ public class CharacterDriver : CharacterDriverBehavior
 
         foreach(IClientMockPlayer player in LobbyService.Instance.MasterLobby.LobbyPlayers)
         {
-            if (player.NetworkId == networkObject.MyPlayerId)
+            if (player.NetworkId == networkObject.Owner.NetworkId)
             {
                 nameText.text = player.Name;
             }
         }
+       
         //nameText.text = LobbyService.Instance.MyMockPlayer.Name;
         
     }
@@ -147,7 +149,38 @@ public class CharacterDriver : CharacterDriverBehavior
         if (Input.GetKey(KeyCode.Escape)) {
             Application.Quit();
         }
-
+        if (NetworkManager.Instance.Networker.IsServer)
+        {
+          /*  List<NetworkObject> players = NetworkManager.Instance.Networker.NetworkObjectList;
+            int count = 0;
+            uint winnerid;
+            String winnerName = "";
+            foreach (NetworkObject player in players)
+            {
+                if (player.lives >= 1)
+                {
+                    count++;
+                    winnerid = ((CharacterDriverNetworkObject)player).Owner.NetworkId;
+                }
+                
+            }
+            if (count == 1)
+            {
+                foreach (IClientMockPlayer player in LobbyService.Instance.MasterLobby.LobbyPlayers)
+                {
+                    if (player.NetworkId == networkObject.Owner.NetworkId)
+                    {
+                        winnerName = player.Name;
+                    }
+                }
+                
+                GameObject winner = new GameObject("Winner");
+                winner.AddComponent<GameDriver>();
+                winner.GetComponent<GameDriver>().name = winnerName;
+                DontDestroyOnLoad(winner);
+                SceneManager.LoadScene(3);
+            }*/
+        }
         //If this isn't our character just update its values client-side
         if (!networkObject.IsOwner)
         {
@@ -337,12 +370,13 @@ public class CharacterDriver : CharacterDriverBehavior
                 if (hit.collider.gameObject.tag == "Player") {
                     Debug.Log("HIT A PLAYER");
                     //Grab reference to the player's RPC call and call it on all clients
-                    float xDif = hit.collider.gameObject.transform.position.x - gameObject.transform.position.x;
-                    float yDif = hit.collider.gameObject.transform.position.y - gameObject.transform.position.y;
-                    Vector3 force = new Vector3(xDif, yDif);
-                    force = Vector3.Normalize(force);
-                    force = new Vector3(force.x * 2, force.y * 2);
-                    hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All, force);
+                    /* float xDif = hit.collider.gameObject.transform.position.x - gameObject.transform.position.x;
+                     float yDif = hit.collider.gameObject.transform.position.y - gameObject.transform.position.y;
+                     Vector3 force = new Vector3(xDif, yDif);
+                     force = Vector3.Normalize(force);
+                     force = new Vector3(force.x * 2, force.y * 2);*/
+                    //hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All, force);
+                    hit.collider.gameObject.GetComponent<CharacterDriver>().networkObject.SendRpc(RPC_TAKE_DAMAGE, Receivers.All);
 
                     //Used for knockback
                     //Vector3 dir = hit.collider.gameObject.transform.position - gameObject.transform.position;
