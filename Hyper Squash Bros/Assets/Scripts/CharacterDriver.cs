@@ -154,6 +154,7 @@ public class CharacterDriver : CharacterDriverBehavior
             myAnimator.SetBool("isRunning", networkObject.isRunning);
             myAnimator.SetBool("isAttackingRight", networkObject.isAttackingRight);
             myAnimator.SetBool("isAttackingLeft", networkObject.isAttackingLeft);
+            //myAnimator.SetBool("isShooting", networkObject.isShooting);
             transform.position = networkObject.position;
             transform.rotation = networkObject.rotation;
             lifeText.text = "Lives: "+ networkObject.lives.ToString();
@@ -234,6 +235,15 @@ public class CharacterDriver : CharacterDriverBehavior
             myAnimator.SetBool("isAttackingLeft", false);
             myAnimator.SetBool("isAttackingRight", false);
 
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            myAnimator.SetBool("isShooting", true);
+        } 
+        else
+        {
+            myAnimator.SetBool("isShooting", false);
         }
         
 
