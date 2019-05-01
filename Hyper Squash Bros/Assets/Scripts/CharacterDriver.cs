@@ -76,8 +76,10 @@ public class CharacterDriver : CharacterDriverBehavior
             //this.forceDamageModifier = forceDamageModifier + .1f;
             //this.StartCoroutine("ResetRecoil", forceDamageModifier);
             //this.recoil = true;
+           
 
-            health -= 10;
+               health -= 10;
+            
         });
     }
 
@@ -159,7 +161,12 @@ public class CharacterDriver : CharacterDriverBehavior
             transform.rotation = networkObject.rotation;
             lifeText.text = "Lives: "+ networkObject.lives.ToString();
             healthText.text = "Health: "+ networkObject.health.ToString();
+            myAnimator.SetBool("isShooting", networkObject.isShooting);
+            if (networkObject.lives <= 0)
+            {
+                gameObject.SetActive(false);
 
+            }
 
             
             
@@ -188,9 +195,7 @@ public class CharacterDriver : CharacterDriverBehavior
 
         velocity = velocity + (Vector3.up * speedY);
         controller.Move(velocity);
-        //Apply gathered input to character position/rotation
-        //transform.Translate(Vector3.forward * Time.deltaTime * moveForward);
-        //controller.Move(velocity);
+      
 
         if(Input.GetKey (KeyCode.A) || Input.GetKey(KeyCode.D) )
         {
@@ -260,6 +265,14 @@ public class CharacterDriver : CharacterDriverBehavior
                 playerLives--;
             }
         }
+        if (health == 0)
+        {
+            transform.position = spawn;
+            justDied = true;
+            health = 100;
+            deathTick = DateTime.Now.Ticks;
+            playerLives--;
+        }
         if (justDied)
         {
             elapsedSinceDeath = new TimeSpan(DateTime.Now.Ticks - deathTick);
@@ -268,6 +281,7 @@ public class CharacterDriver : CharacterDriverBehavior
                 justDied = false;
             }
         }
+        
 
         networkObject.health = health;
         //Send the updated positions and rotations over the network
@@ -279,9 +293,18 @@ public class CharacterDriver : CharacterDriverBehavior
         networkObject.isAttackingLeft = myAnimator.GetBool("isAttackingLeft");
         networkObject.isRunning = myAnimator.GetBool("isRunning");
         networkObject.isIdle = myAnimator.GetBool("isIdle");
+        networkObject.isShooting = myAnimator.GetBool("isShooting");
+        if (justDied)
+        {
+            networkObject.SnapInterpolations();
+        }
+        if (playerLives <= 0)
+        {
+            gameObject.SetActive(false);
+        }
         networkObject.position = transform.position;
         networkObject.rotation = transform.rotation;
-
+        
     }
     
     void Jump()
@@ -334,6 +357,7 @@ public class CharacterDriver : CharacterDriverBehavior
     {
         //removes the user from everyone else's game
         //playerInfo.SetActive(false);
+        gameObject.SetActive(false);
         networkObject.Destroy();
     }
 
